@@ -191,13 +191,62 @@ The one caveat worth stating plainly: the regression's own prediction interval i
 
 1. **n=256 is workable for 1–2 predictors, not more.** That's exactly why venue_type was tested and dropped — it didn't earn its keep out-of-sample.
 2. **Capacity explains less than half the variance** (R² ≈ 0.46–0.49 OOS). Most of what actually drives naming-rights fees isn't in this model yet.
-3. **No market-size term** — same gap as the ratio method's global-basis v2 approach; this cross-check doesn't close it, it only confirms the ratio range's magnitude isn't unreasonable.
+3. **Country-level market size was tested and doesn't close this gap either** — see "Market adjustment" below. The unexplained variance is real, not just a missing-feature artifact this pass happened not to try.
 4. **Median 68% out-of-sample error is wide.** This model is useful for sanity-checking an order of magnitude, not for pinpointing a number on its own.
 5. **The prediction interval, not the point estimate, is the honest summary of what this model knows.** The point estimate agreeing closely with the ratio base case is a genuinely good sign; the width of the interval around it is the more important number to keep in mind.
+
+---
+
+## Market adjustment: tested, not adopted
+
+**Goal:** see whether country-level GDP/population closes some of the ~53% of variance capacity alone leaves unexplained (R² ≈ 0.47). Code: `scripts/fetch_country_market_data.py`, `sql/analysis/chiba_lotte_market_join.sql`, `scripts/regression_cross_check.py`.
+
+### Data: `ref.country_market`
+
+World Bank `NY.GDP.MKTP.CD` (GDP) and `SP.POP.TOTL` (population), latest published year, for the 4 countries actually present in the comparable set (no European country has an OBSERVED row):
+
+| Country | Year | GDP (USD) | Population | GDP per capita |
+|---|---|---|---|---|
+| United States | 2024 | $29.30T | 340.0M | $86,170 |
+| Japan | 2024 | $4.19T | 124.0M | $33,797 |
+| Canada | 2024 | $2.27T | 41.3M | $55,016 |
+| Singapore | 2024 | $0.57T | 6.0M | $94,897 |
+
+Spot-check against the task's expectation: Japan ≈ $4T ✓, US ≈ $27T (ballpark) — actual latest published figure is $29.3T for 2024, close to the same order of magnitude; the small gap is just which year's the newest one available, not a data error.
+
+### Join coverage: 100%, zero unmatched
+
+`analysis.naming_rights_analysis_ready_with_market` LEFT JOINs the comparable set to `ref.country_market` by country name (the name→World-Bank-code mapping happens once, at ingestion, in `fetch_country_market_data.py` — the join itself is a plain equality). Checked for unmatched countries explicitly:
+
+| Country | Comparable rows | Unmatched (no market data) |
+|---|---|---|
+| United States | 235 | 0 |
+| Canada | 11 | 0 |
+| Japan | 9 | 0 |
+| Singapore | 1 | 0 |
+
+**The coarse-proxy caveat, stated plainly:** this is country-level data — all 235 US rows get the identical US-national GDP/population figure, whether the venue is in a small college town or New York City. It cannot distinguish market size *within* a country at all. US metro-level (Census MSA) population remains a possible future refinement (CLAUDE.md section 1), not attempted here.
+
+### Out-of-sample test: does it improve on capacity alone?
+
+Same protocol as the capacity-only cross-check above (repeated 5-fold CV, 10 repeats, 2,560 out-of-sample predictions per model):
+
+| Model | Median abs. % error (OOS) | R² (log scale, OOS) |
+|---|---|---|
+| Capacity only (baseline) | **68.05%** | 0.462 |
+| Capacity + log(GDP) | 69.50% | 0.456 |
+| Capacity + log(GDP per capita) | 68.44% | 0.483 |
+
+**Neither market term improves out-of-sample median error** — both are slightly worse than capacity alone (69.50% and 68.44% vs. 68.05%). GDP per capita does nudge R² up a little (0.483 vs. 0.462), the same pattern venue_type showed earlier, and the same conclusion applies: an in-sample-looking improvement that doesn't survive out-of-sample testing isn't worth adding.
+
+**Why this probably isn't working, plainly:** 235 of 256 rows (92%) are all "United States" — they all get the *exact same* market-size value. A feature that's constant across 92% of the data has almost no within-country variation to learn from; what little between-country variation exists (4 distinct values) is swamped by capacity's much larger, individually-varying signal and by the large residual noise this model already has. This isn't a coding bug — it's the expected consequence of using a coarse, mostly-constant proxy on a US-dominated sample. A metro-level feature (which would vary venue-by-venue even within the US) is a more promising next step than country-level GDP ever could be, but that's future work, not this pass.
+
+**Decision: keep the capacity-only model.** No market-adjusted Chiba Lotte prediction is produced, because there is no honest out-of-sample basis for one — the market-size version of the model is not more accurate, it's marginally worse. The capacity-only prediction from the cross-check section above ($3,115,912 / ¥466M, with its 80% PI of $0.70M–$13.79M) stands unchanged.
 
 ---
 
 ## What's next
 
 - **Dashboard** (Part 3) — not started yet, per instructions.
-- Decide whether a market-size-adjusted variant should sit alongside this global-standard estimate, or whether the global-standard framing stands on its own for the final deliverable.
+- Decide whether a market-size-adjusted variant should sit alongside this global-standard estimate, or whether the global-standard framing stands on its own for the final deliverable — country-level GDP/population didn't move the regression, so this remains primarily a *ratio-method framing* question (the v1-vs-v2 regional-discount decision), not something the cross-check resolved either way.
+- If market size is worth revisiting, a metro/city-level feature (not country-level) is the more promising next attempt, per the "why this probably isn't working" note above.

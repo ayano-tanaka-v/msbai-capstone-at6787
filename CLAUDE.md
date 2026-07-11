@@ -51,6 +51,26 @@ One CSV per source, loaded **as-is** into raw tables (values untouched):
 | Market size (baseline) | World Bank | `SP.POP.TOTL`, `NY.GDP.MKTP.CD`, income indicators | annual, by country |
 | Market size (finer, optional) | US Census (MSA) + manual for key JP cities | Metropolitan Statistical Area population | metro area |
 
+- **Decision: `ref.country_market` loaded** (`SP.POP.TOTL`, `NY.GDP.MKTP.CD`,
+  latest published year — 2024 for all 4 countries below) for the 4
+  countries actually present in the comparable set: United States, Canada,
+  Japan, Singapore (no European country has an OBSERVED row — the EUR rows
+  are all ESTIMATE; see the internal-sources table above). Spot-checked:
+  Japan GDP ≈ $4.19T, US GDP ≈ $29.3T (2024).
+  - **Caveat (important, stated here since it affects every downstream
+    use):** this is **country-level** GDP/population — every US venue gets
+    the identical US-national figure regardless of whether it's a small
+    college town or New York City. It's a coarse market-size proxy, not a
+    substitute for metro-level data. US metro-level population (US Census
+    MSA, per the "finer, optional" row above) remains a possible future
+    refinement, not done here.
+  - **Result of testing this as a regression feature (see section 4):
+    country-level GDP/GDP-per-capita did NOT improve out-of-sample
+    accuracy** over capacity alone — plausibly *because* of the coarseness
+    above (235 of 256 comparable rows are all "United States," so the
+    market term carries almost no within-country variation to learn from).
+    Kept capacity-only; the market data stays loaded and joinable for a
+    future finer-grained attempt, but isn't part of the current model.
 - **Decision: FRED `CPIAUCSL` replaced by World Bank `FP.CPI.TOTL`** for US
   inflation. Reason: this session's network policy allowlists
   `api.worldbank.org` but FRED's `api.stlouisfed.org` requires a per-request
@@ -160,6 +180,14 @@ Pipeline for every monetary value:
   - **Cross-check model:** regress real-2024-USD annual fee on capacity, market
     size, league tier (log where sensible). Report **out-of-sample** error
     (hold out disclosed rows); never report only in-sample fit.
+    - **Result: capacity-only wins.** Tested venue_type and country-level
+      market size (`log_gdp`, `log_gdp_per_capita`) as added terms, each
+      judged on out-of-sample error (repeated k-fold), not in-sample fit.
+      Neither improved on capacity alone — full reasoning and numbers in
+      `analysis/VALUATION.md`'s cross-check sections and section 1's
+      `ref.country_market` note above. Kept capacity-only rather than
+      carry a term that looks better in-sample but doesn't earn its keep
+      out-of-sample.
 - **Decision: data-quality floor on the comparable set — `annual_fee_usd_real2024
   >= $10,000/year`.** Applied to the normalized USD fee, not the raw original
   units (a JPY fee's nominal digits are naturally large, so a raw-units floor
