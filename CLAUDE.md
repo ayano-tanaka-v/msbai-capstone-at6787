@@ -131,3 +131,41 @@ Pipeline for every monetary value:
 - Keep the central answer sharp (commit to a Chiba Lotte range); the generalizable
   engine is a stated strength in DECISIONS.md, not an excuse for a vague answer.
 - Accountable for the outcome, not the agent. A green pipeline can still be wrong.
+
+---
+
+## 8. Cloud Credentials
+
+Managed by the [cloud-bootstrap](https://github.com/ipeirotis/cloud-bootstrap)
+skill (`.claude/skills/cloud-bootstrap/`). Encrypted credentials live in the
+repo; a SessionStart hook decrypts and authenticates automatically at the
+start of every Claude Code session — no manual token pasting after initial
+setup.
+
+- **Provider / project:** GCP, project `msbai-capstone-at6787`.
+- **Service account:** `claude-agent@msbai-capstone-at6787.iam.gserviceaccount.com`.
+- **Roles granted (least privilege, requested per-need):**
+  - `roles/bigquery.dataEditor` — create/write the `raw` dataset and later
+    clean/analysis-ready datasets and tables.
+  - `roles/bigquery.jobUser` — run BigQuery load and query jobs.
+  - Cloud Run roles (`roles/run.developer`, `roles/artifactregistry.writer`,
+    `roles/iam.serviceAccountUser`) are **not yet granted** — to be requested
+    via the same skill when the Part 3 Streamlit/Cloud Run deploy actually
+    starts, not before.
+- **Multi-user:** each team member gets their own
+  `.cloud-credentials.<email>.enc`, encrypted with their own passphrase
+  (`CLOUD_CREDENTIALS_KEY` or `GCP_CREDENTIALS_KEY` env var, never stored in
+  the repo). This repo's identity key uses `CLAUDE_CODE_USER_EMAIL`
+  (`at6787@stern.nyu.edu`) rather than `git config user.email`, because this
+  harness sets the git commit author to `noreply@anthropic.com` for GitHub
+  commit verification — that value does not identify the human user, so the
+  cloud-bootstrap hook and workflows here resolve identity via
+  `CLAUDE_CODE_USER_EMAIL` first, falling back to `git config user.email`.
+- **Authentication:** automatic via `.claude/hooks/cloud-auth.sh`
+  (SessionStart hook). To re-run manually or add a team member, see the
+  skill's `workflows/authenticate.md` / `workflows/add-team-member.md`.
+- **To escalate permissions** (e.g. for the future Cloud Run deploy): ask
+  Claude to add the specific role; it will tell you which one and why, then
+  wait for your approval before requesting a new bootstrap token — see
+  `workflows/permission-escalation.md`. The agent never modifies IAM policy
+  without an explicit approved role list.
