@@ -249,10 +249,25 @@ setup.
   - `roles/bigquery.dataEditor` — create/write the `raw` dataset and later
     clean/analysis-ready datasets and tables.
   - `roles/bigquery.jobUser` — run BigQuery load and query jobs.
-  - Cloud Run roles (`roles/run.developer`, `roles/artifactregistry.writer`,
-    `roles/iam.serviceAccountUser`) are **not yet granted** — to be requested
-    via the same skill when the Part 3 Streamlit/Cloud Run deploy actually
-    starts, not before.
+  - **Granted 2026-07, for the Part 3 Cloud Run deploy** (escalation
+    requested and approved per `workflows/permission-escalation.md`; user
+    ran the grants directly in Cloud Shell — the agent never modified IAM
+    policy itself):
+    - `roles/run.developer` — create/update the Cloud Run service (deploy
+      revisions, env vars, traffic).
+    - `roles/artifactregistry.writer` — `gcloud run deploy --source` builds
+      a container image and pushes it to Artifact Registry.
+    - `roles/cloudbuild.builds.editor` — `--source` deploys implicitly
+      trigger a Cloud Build job to build the image from source.
+    - `roles/logging.logWriter` — Cloud Build needs this to write build
+      logs to Cloud Logging.
+    - `roles/iam.serviceAccountUser` — **scoped to the `claude-agent`
+      service account resource itself** (not project-wide): needed to act
+      as itself when attaching to the Cloud Run revision / Cloud Build job.
+    - APIs enabled: `run.googleapis.com`, `cloudbuild.googleapis.com`,
+      `artifactregistry.googleapis.com`.
+    - No new bootstrap token was needed — this only expanded the existing
+      service account's permissions, it didn't rotate or reissue its key.
 - **Multi-user:** each team member gets their own
   `.cloud-credentials.<email>.enc`, encrypted with their own passphrase
   (`CLOUD_CREDENTIALS_KEY` or `GCP_CREDENTIALS_KEY` env var, never stored in
