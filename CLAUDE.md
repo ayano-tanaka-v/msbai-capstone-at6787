@@ -219,6 +219,35 @@ Pipeline for every monetary value:
 
 - **Deployed public Streamlit dashboard on Cloud Run** (course default; reuses
   Assignment 1 setup).
+  - **Live URL:** https://naming-rights-dashboard-dyskbb5rka-an.a.run.app
+    — public, no-login (`roles/run.invoker` → `allUsers`), region
+    `asia-northeast1`, service `naming-rights-dashboard`. Deployed from
+    `dashboard/` (see `dashboard/spec.md` for the full spec and Verify targets).
+  - **Deploy pipeline:** no `gcloud` CLI in this environment
+    (`sdk.cloud.google.com` is blocked by the session's network proxy) — deploys
+    go through the `google-cloud-build` / `google-cloud-run` / `google-cloud-storage`
+    Python clients directly: upload source to a GCS staging bucket, submit a
+    Cloud Build build (tagged image pushed to Artifact Registry), then
+    `run_v2.ServicesClient` create/update.
+    - **Decision: image tags must be unique per deploy, never `:latest`.**
+      Reusing a mutable tag across deploys let `update_service` see an
+      unchanged image string and silently skip creating a new revision, even
+      though the underlying image content had changed — an early deploy
+      shipped zero of the intended changes this way, undetected until a user
+      re-checked the live page. Every deploy now tags the image with a build
+      timestamp and explicitly confirms `latest_created_revision` changed
+      before declaring success.
+    - **Caveat: this sandbox cannot directly verify the live URL.** Direct
+      HTTP requests to `*.run.app` are blocked by this session's own network
+      proxy (unrelated to the service's actual access controls), and
+      `WebFetch` — which can reach `*.run.app` — returned a persistent 403
+      even after the service was confirmed public via the IAM API
+      (`roles/run.invoker` → `allUsers` correctly set, service healthy). The
+      user's own browser was the only channel that got a real answer;
+      `WebFetch`'s 403 here was a tooling artifact of this session, not a
+      real access problem. **A future session should not trust `WebFetch`
+      as proof a Cloud Run URL is broken — verify via the IAM policy API and
+      ask the user to check their own browser before concluding otherwise.**
 - Features: **currency selector** (USD/JPY/EUR…), **venue-input panel** (capacity,
   league tier, venue type, market) so the engine prices any venue, with
   **Chiba Lotte as the preset**. Benchmark distribution + the target's estimated
@@ -268,6 +297,30 @@ setup.
       `artifactregistry.googleapis.com`.
     - No new bootstrap token was needed — this only expanded the existing
       service account's permissions, it didn't rotate or reissue its key.
+  - **Granted 2026-07, one-off setup gaps discovered only when the source
+    deploy was actually attempted** (each requested and approved
+    individually per the same escalation workflow):
+    - `roles/storage.objectAdmin`, **scoped to one specific bucket**
+      (`gs://msbai-capstone-at6787-build-staging`, user-created — not
+      project-wide `roles/storage.admin`): `gcloud run deploy --source`'s
+      Cloud Build step needs a GCS bucket to stage source code, and
+      claude-agent had zero Storage permissions until this. Object-level
+      only — claude-agent still can't create/list/get buckets, only
+      read/write objects in this one.
+    - Artifact Registry repository `cloud-run-source-deploy` (region
+      `asia-northeast1`) was **created by the user directly**, not granted
+      as a role — `roles/artifactregistry.writer` covers push/pull to an
+      existing repo but not `artifactregistry.repositories.create`, and a
+      one-time manual repo creation was simpler than a broader
+      `repoAdmin`/`admin` grant for a single one-off action.
+    - Making the deployed Cloud Run service public (`roles/run.invoker` →
+      `allUsers`) was done by the **user directly**
+      (`gcloud run services add-iam-policy-binding`), not granted to
+      claude-agent — `run.services.setIamPolicy` isn't in `roles/run.developer`
+      and would have meant requesting the broader `roles/run.admin`; treating
+      "make this service public" as the user's own call felt like the
+      right scope boundary for a deliberately consequential access change,
+      not just a scope-minimization exercise.
 - **Multi-user:** each team member gets their own
   `.cloud-credentials.<email>.enc`, encrypted with their own passphrase
   (`CLOUD_CREDENTIALS_KEY` or `GCP_CREDENTIALS_KEY` env var, never stored in
