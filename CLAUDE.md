@@ -142,10 +142,21 @@ Pipeline for every monetary value:
   - **Segmentation, not one global ratio** (the data shows fee-per-seat is highly
     dispersed): segment by **capacity band × league tier × venue type**, with a
     market-size adjustment.
-  - **Comparable priority for Chiba Lotte:** (1) Japan/NPB ballparks & large
+  - ~~**Comparable priority for Chiba Lotte:** (1) Japan/NPB ballparks & large
     stadiums — anchored on ZOZO Marine (current home), ES CON Field, Rakuten Park,
     Mizuho PayPay Dome; (2) North American ballparks, market-adjusted; (3) European
-    football = reference only (do not mix estimates with disclosed).
+    football = reference only (do not mix estimates with disclosed).~~
+    **Superseded (v2) — decision: do NOT discount for Japan's regional market.**
+    Reasoning: Japan's naming-rights market is currently below global levels but
+    is converging upward, so the valuation targets the venue's **global-standard
+    potential**, not what the local Japanese market pays today. Segmentation is
+    now by **venue type × capacity size only** (global ballparks; ballparks in a
+    25k–45k capacity band as the closest size peers to Chiba Lotte's 33,000
+    seats) — country/region is no longer a segmentation axis, and Japan rows are
+    not down-weighted. The v1 regional-anchored approach (ZOZO Marine treated as
+    a binding floor) is kept only as a sanity check, not the primary method —
+    see `analysis/VALUATION.md` v2 and `sql/analysis/chiba_lotte_valuation_v2.sql`
+    (v1 preserved at `chiba_lotte_valuation_v1.sql` for reference).
   - **Cross-check model:** regress real-2024-USD annual fee on capacity, market
     size, league tier (log where sensible). Report **out-of-sample** error
     (hold out disclosed rows); never report only in-sample fit.
