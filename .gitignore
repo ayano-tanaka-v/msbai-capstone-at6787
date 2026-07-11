@@ -2,3 +2,6 @@
 credentials.json
 credentials_clean.json
 /tmp/
+
+__pycache__/
+*.pyc

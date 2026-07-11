@@ -144,7 +144,60 @@ Today's Japan market spans roughly $12–$197/seat across both classes; among th
 
 ---
 
+## Cross-check (regression)
+
+**Purpose:** confirm the ratio-method range above isn't way off, using an independent method with honest out-of-sample testing — **not** to produce a new headline number. Code: `scripts/regression_cross_check.py`.
+
+**Data:** the same 256-row global `analysis.naming_rights_analysis_ready` comparable set the ratio method draws from (all OBSERVED rows with a real-2024-USD fee and a capacity — every venue type, every country, sub-$10k floor already excluded).
+
+**Model:** `log(annual_fee_usd_real2024) ~ log(capacity)`, optionally `+ venue_type` (collapsed to Ballpark / Stadium / Arena / Other, to avoid rare-level dummies). Kept deliberately minimal — one or two predictors on 256 rows — rather than adding more terms the data can't support yet.
+
+### Out-of-sample validation (5-fold CV, repeated 10x = 50 held-out folds, 2,560 out-of-sample predictions total — not one lucky split)
+
+| Model | Median abs. % error (OOS) | p75 abs. % error (OOS) | R² (log scale, OOS) |
+|---|---|---|---|
+| A: capacity only | **68.1%** | 106.3% | 0.462 |
+| B: capacity + venue_type | 68.2% | 102.9% | 0.493 |
+
+**Model chosen: A (capacity only).** Adding venue_type nudges R² up (0.462 → 0.493) but does *not* improve the median out-of-sample error (68.1% vs. 68.2% — statistically indistinguishable) — exactly the "keep it simple" call CLAUDE.md's method asks for: added complexity that doesn't earn its keep on held-out data isn't worth carrying.
+
+**On data it never saw, the model's predictions are typically within roughly two-thirds (68%) of the actual fee, in either direction.** That is a wide error band, stated plainly, not softened — capacity alone explains under half of the variance in naming-rights fees (R² ≈ 0.46–0.49 out-of-sample); the rest comes from factors this simple model doesn't include (market size, sponsor industry, negotiated terms, timing).
+
+### Final model (refit on all 256 rows, for the actual Chiba Lotte prediction)
+
+`log(fee) = 3.0688 + 1.1422 × log(capacity)` (n=256, in-sample R² = 0.471; capacity coefficient significant, p < .001). The capacity exponent (~1.14, slightly above 1) suggests fee scales a bit more than proportionally with capacity, though the wide uncertainty below means this shouldn't be over-read.
+
+### Chiba Lotte prediction (capacity = 33,000)
+
+| | USD | JPY (¥149.66/$1) |
+|---|---|---|
+| **Point estimate** | **$3,115,912** | **¥466M** |
+| 50% prediction interval | $1,425,373 – $6,811,484 | ¥213M – ¥1,019M |
+| 80% prediction interval | $703,835 – $13,794,301 | ¥105M – ¥2,064M |
+
+### Does it agree with the ratio method? Yes — cleanly.
+
+| | Ratio method (v2) | Regression |
+|---|---|---|
+| Conservative / 50% PI low | $1.45M (¥217M) | $1.43M (¥213M) |
+| Base / point estimate | $3.22M (¥482M) | $3.12M (¥466M) |
+| Upside / 50% PI high | $8.66M (¥1,296M) | $6.81M (¥1,019M) |
+
+**The cross-check passes.** The regression's central prediction ($3.12M / ¥466M) lands within 3% of the ratio method's base case ($3.22M / ¥482M) — an independent method, built from the same comparables but a completely different mechanism (a fitted curve vs. percentile matching), landing almost on top of the ratio method's headline number. The ratio method's conservative case sits almost exactly at the regression's 50% prediction-interval floor, and the *entire* ratio range (conservative through upside) falls inside the regression's 80% prediction interval ($0.70M–$13.79M / ¥105M–¥2,064M) with room to spare.
+
+The one caveat worth stating plainly: the regression's own prediction interval is wide (over 13x from low to high at the 80% level) — this is a real, low-precision cross-check, not a tight independent confirmation. What it rules out is the ratio range being *wildly* off (e.g., 10x too high or too low); it does not add precision beyond what the ratio method already provides.
+
+### Model's limits (stated plainly)
+
+1. **n=256 is workable for 1–2 predictors, not more.** That's exactly why venue_type was tested and dropped — it didn't earn its keep out-of-sample.
+2. **Capacity explains less than half the variance** (R² ≈ 0.46–0.49 OOS). Most of what actually drives naming-rights fees isn't in this model yet.
+3. **No market-size term** — same gap as the ratio method's global-basis v2 approach; this cross-check doesn't close it, it only confirms the ratio range's magnitude isn't unreasonable.
+4. **Median 68% out-of-sample error is wide.** This model is useful for sanity-checking an order of magnitude, not for pinpointing a number on its own.
+5. **The prediction interval, not the point estimate, is the honest summary of what this model knows.** The point estimate agreeing closely with the ratio base case is a genuinely good sign; the width of the interval around it is the more important number to keep in mind.
+
+---
+
 ## What's next
 
-- **Regression cross-check**: regress real-2024-USD fee on capacity (and, if useful, league tier), report out-of-sample error, and confirm it doesn't wildly disagree with this global ratio-based range.
+- **Dashboard** (Part 3) — not started yet, per instructions.
 - Decide whether a market-size-adjusted variant should sit alongside this global-standard estimate, or whether the global-standard framing stands on its own for the final deliverable.
