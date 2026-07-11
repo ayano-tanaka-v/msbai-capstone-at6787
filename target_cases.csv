@@ -1,0 +1,36 @@
+Section,Item,Value,Unit / Classification,Source / URL,Notes
+Calculation Objective,Research objective,Estimate the fair annual naming-rights fee and potential contract value for the planned Chiba Lotte Marines new stadium.,Target case,,This is the valuation target of the workbook; it is not an observed historical contract.
+Calculation Objective,Target Record ID,TARGET-CHIBA-LOTTE-2034,Internal ID,,"Use this ID to link assumptions, scenarios, and future valuation outputs."
+Target Venue,Planned venue name,Chiba Lotte Marines New Stadium (planned),Working English name,,Naming-rights name has not been determined.
+Target Venue,Current / related venue,ZOZO Marine Stadium / Chiba Marine Stadium,Existing home venue,,"Current venue remains a comparable Asia benchmark, but the target is the planned new stadium."
+Target Venue,Primary tenant,Chiba Lotte Marines,NPB / Pacific League,,Primary professional baseball tenant.
+Target Venue,Planned opening,2034,Year,https://www.sponichi.co.jp/baseball/news/2025/05/23/articles/20250523s00001173071000c.html,Sponichi reports that the city aims to open the new stadium in 2034.
+Target Venue,Location,"Makuhari Messe parking lot, Toyosuna area, Chiba",Planned site,https://www.sponichi.co.jp/baseball/news/2025/05/23/articles/20250523s00001173071000c.html,"Sponichi states that the planned site is the Makuhari Messe parking lot, about 500m from Makuhari-Toyosuna Station."
+Target Venue,Official planning site area,110000,sqm,https://www.city.chiba.jp/sogoseisaku/miraitoshi/marinesaiseibi/documents/kihonkousouann20250704.pdf,Chiba City concept plan identifies approx. 11ha near JR Makuhari-Toyosuna Station within the Makuhari Messe parking lot.
+Target Venue,Venue type,Outdoor ballpark / stadium,Facility type,https://www.sponichi.co.jp/baseball/news/2025/05/23/articles/20250523s00001173071000c.html,Sponichi states the city chose an outdoor stadium concept rather than a dome.
+Target Venue,Planned capacity,33000,Seats,https://www.sponichi.co.jp/baseball/news/2025/05/23/articles/20250523s00001173071000c.html,"Reported as approximately 33,000 seats, roughly 10% above the current stadium."
+Target Venue,Approximate project cost,65000000000,JPY,https://www.sponichi.co.jp/baseball/news/2025/05/23/articles/20250523s00001173071000c.html,Reported estimated project cost is approximately JPY 65.0 billion.
+Target Venue,Access,Approx. 500m from JR Makuhari-Toyosuna Station; approx. 1.2km from JR Kaihin-Makuhari Station,Location / mobility,https://www.city.chiba.jp/sogoseisaku/miraitoshi/marinesaiseibi/documents/kihonkousouann20250704.pdf,Use station proximity as a key market and mobility variable.
+Target Venue,Urban-development concept,Ballpark / 365-day destination with commercial and entertainment functions,Urban value factor,https://www.sponichi.co.jp/baseball/news/2025/05/23/articles/20250523s00001173071000c.html,"Sponichi reports a ballpark concept using private investment for commercial, entertainment and hotel functions."
+Target Venue,Relevant design assumptions,Artificial turf; roof over upper seats under consideration; indoor practice facility connected to stadium,Facility features,https://www.sponichi.co.jp/baseball/news/2025/05/23/articles/20250523s00001173071000c.html,"These features can affect event utilization, fan experience, and sponsor exposure."
+Valuation Scope,Primary valuation output,Estimated annual naming-rights fee,JPY/year,,To be calculated later using benchmark data and scenario assumptions.
+Valuation Scope,Secondary valuation output,Estimated total contract value under selected contract terms,JPY total,,"Example terms may include 5-year, 10-year, 15-year, and 20-year cases."
+Valuation Scope,Training / benchmark use,Exclude this row from historical benchmark training data,Important flag,,"The target case contains future assumptions, not an observed contract price."
+Recommended Benchmark Groups,Benchmark group,Relevant records,Priority,Rationale,Notes
+Recommended Benchmark Groups,Japan / Asia baseball ballparks,"ZOZO Marine Stadium, ES CON Field Hokkaido, Mizuho PayPay Dome Fukuoka, Rakuten Mobile Park Miyagi",Highest,Same country / same or similar professional baseball context,Use official disclosed data separately from media-estimated data.
+Recommended Benchmark Groups,Japan large public stadiums and arenas,"National Stadium / MUFG Stadium, GMO Arena Saitama, Ajinomoto Stadium, Nissan Stadium",High,Large Japanese venue naming-rights market context,"Check whether venue is public, private, or bundled."
+Recommended Benchmark Groups,North American MLB / major ballparks,SBJ Major League ballparks and comparable baseball venues,High,Mature naming-rights market with many disclosed contracts,Use FX / inflation normalization and market-size adjustment.
+Recommended Benchmark Groups,Asian multi-purpose stadiums / sports hubs,OCBC Arena / Singapore Sports Hub and other Asian cases,Medium,Regional Asia context and public-private venue structures,Flag multi-asset bundles separately.
+Recommended Benchmark Groups,European football naming-rights valuations,Kroll football club estimates,Reference only,Useful for global sponsor and brand-value context,Do not mix estimated football valuations with disclosed baseball contracts without flags.
+Required Data Before Final Estimation,Data item,Why it matters,Status,Preferred source,Notes
+Required Data Before Final Estimation,Expected annual attendance,Core exposure and demand variable,To collect,Chiba City plan / Chiba Lotte / historical attendance,Use current ZOZO Marine attendance and future capacity assumptions.
+Required Data Before Final Estimation,Expected annual event days,Determines non-baseball utilization and exposure,To collect,City plan / venue operator assumptions,"Separate baseball, concerts, community events, and commercial uses."
+Required Data Before Final Estimation,Broadcast / streaming exposure,National media value driver,To collect,"NPB, TV ratings, streaming platforms","Use conservative, base, and upside cases."
+Required Data Before Final Estimation,Digital and search indicators,Brand association and sponsor visibility,To collect,"Google Trends, social platforms, team accounts",Track current ZOZO Marine and Chiba Lotte baseline.
+Required Data Before Final Estimation,Contract scope,Determines whether value is venue-only or bundled,To define,Future public tender / sponsor agreement,Explicitly separate naming rights from sponsorship package assets.
+Required Data Before Final Estimation,Tax treatment,Needed for comparable monetary values,To define,Future contract or tender document,Japanese public data may be tax included or tax excluded.
+Required Data Before Final Estimation,Contract length and start year,Affects total contract value and inflation risk,Scenario input,Scenario assumption,Use multiple contract-term scenarios until official information is available.
+Future Valuation Output Placeholder,Scenario,Estimated Annual Fee (JPY),Contract Term Years,Estimated Total Value (JPY),Notes
+Future Valuation Output Placeholder,Conservative,,,,To be calculated after benchmark selection and normalization.
+Future Valuation Output Placeholder,Base,,,,To be calculated after benchmark selection and normalization.
+Future Valuation Output Placeholder,Upside,,,,To be calculated after benchmark selection and normalization.
