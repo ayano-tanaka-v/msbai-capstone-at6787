@@ -1,0 +1,132 @@
+[
+  {
+    "name": "Data_Status",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Data_Quality",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Venue_Type",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Primary_Use",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Ownership_Type",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "New_Renewed_Venue_Flag",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Sponsor_Industry",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Contract_Status",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Currency",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Yes_No_Unknown",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "League_Tier_Level",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Source_Type",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Source_Reliability",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Region",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Subregion",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Data_Type_Value_Basis",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Value_Disclosure_Status",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Rights_Type",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Naming_Scope",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Tax_Treatment",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Public_Private_Facility",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Facility_Governance_Scheme",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Bundled_Assets_Flag",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Row_Source_Type",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Original_Language",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Data_Collection_Priority",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
+]
