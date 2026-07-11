@@ -59,6 +59,25 @@ All external sources are free and key-less (FRED CSV gateway / World Bank REST).
 - **Controlled vocabularies:** `reference/code_lists.csv`.
 - **Row classification (never mix these):** `Data Type / Value Basis` +
   `Row Source Type` separate *actual disclosed* vs *estimate* vs *target*.
+  - **Decision (recorded here since the source data doesn't fully pin it
+    down):** `Data Type / Value Basis` is only populated for SRC-ASIA and
+    SRC-TARGET (~3% of rows) — SRC-SBJ and SRC-KROLL leave it blank. The
+    `clean.naming_rights_clean` view (`sql/clean/naming_rights_clean.sql`)
+    therefore classifies every row as OBSERVED / ESTIMATE / TARGET using
+    `Data Type / Value Basis` where populated, falling back to the Source
+    ID prefix otherwise:
+    - `Data Type / Value Basis` = 'Target valuation case', or prefix
+      `SRC-TARGET` → **TARGET**
+    - 'Actual disclosed' / 'Actual reported but partially disclosed' →
+      **OBSERVED**
+    - 'Media estimate' / 'Minimum asking price' → **ESTIMATE** (an asking
+      price is not a consummated disclosed fee, so it's kept out of the
+      disclosed-only benchmark)
+    - Blank + prefix `SRC-KROLL` → **ESTIMATE** (per section 1: "football
+      club estimates ... reference only")
+    - Blank + prefix `SRC-SBJ` → **OBSERVED** (directory of disclosed
+      contracts, not labeled an estimate)
+    - Result: 599 OBSERVED, 42 ESTIMATE, 1 TARGET (642 total, 0 unclassified).
 
 ---
 
