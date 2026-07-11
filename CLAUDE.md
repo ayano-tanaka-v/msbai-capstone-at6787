@@ -57,6 +57,19 @@ One CSV per source, loaded **as-is** into raw tables (values untouched):
   (HTTP 200, annual series 2000–2024). Consolidating FX and CPI onto a single
   key-less source (World Bank) removes a credential dependency and an extra
   vendor from the pipeline.
+- **Decision: `ref.fx_rates` / `ref.us_cpi` extended to cover 2025–2026**
+  (originally 2000–2024). Reason: the strict comparable filter was dropping
+  several real, already-collected disclosed OBSERVED contracts for no
+  reason other than their contract start year (2025/2026) falling outside
+  the reference tables' range — this recovers genuine data, not a new
+  source. World Bank has since published actual 2025 values for the FX
+  series (JPY/EUR/GBP/CAD/SGD); US CPI 2025 and all 2026 values are not yet
+  published as of this writing. Every ref row now carries a `value_basis`
+  column: `'actual'` for a real published value, `'carried_forward'` when
+  the year isn't published yet and the most recent actual value was
+  carried forward instead — so a carried-forward year is never silently
+  mistaken for a real observation. 2000–2024 remain 100% `'actual'` (the
+  fetch script fails loudly if that ever regresses).
 
 All external sources are free and key-less (World Bank REST).
 
