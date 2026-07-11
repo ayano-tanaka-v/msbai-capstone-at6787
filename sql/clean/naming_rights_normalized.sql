@@ -20,12 +20,16 @@
 -- is the latest published actual CPI year, per CLAUDE.md section 3's
 -- decision to not project 2025/2026.
 --
--- ref.fx_rates / ref.us_cpi only cover 2000-2024: rows with a contract
--- start year before 2000 or after 2024 (a real, non-trivial slice --
--- several dozen recently-reported/future-dated USD and JPY contracts, plus
--- a few pre-2000 ones) will get a NULL normalized fee for that reason, not
--- because anything is broken. `normalization_null_reason` makes that
--- explicit so it isn't mistaken for a join bug.
+-- ref.fx_rates / ref.us_cpi cover 2000-2026 (2000-2024 all actual; 2025/2026
+-- are actual where World Bank has published, carried-forward from the
+-- latest actual year otherwise -- see CLAUDE.md section 1 and
+-- scripts/fetch_ref_data.py). Rows with a contract start year outside
+-- 2000-2026, or before 2000, still get a NULL normalized fee for that
+-- reason, not because anything is broken -- `normalization_null_reason`
+-- makes that explicit. `fx_value_basis` / `cpi_start_value_basis` carry the
+-- underlying ref row's 'actual' | 'carried_forward' flag through so a
+-- normalized fee can always be traced back to whether it relied on a
+-- carried-forward year.
 
 CREATE OR REPLACE VIEW `msbai-capstone-at6787.clean.naming_rights_normalized` AS
 WITH mapped AS (
@@ -47,7 +51,9 @@ joined AS (
   SELECT
     m.*,
     fx.lcu_per_usd AS fx_rate_used,
+    fx.value_basis AS fx_value_basis,
     cpi_start.cpi_index AS cpi_contract_start_year,
+    cpi_start.value_basis AS cpi_start_value_basis,
     cpi_2024.cpi_index AS cpi_2024_index
   FROM mapped m
   LEFT JOIN `msbai-capstone-at6787.ref.fx_rates` fx
