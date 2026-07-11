@@ -1,0 +1,517 @@
+[
+  {
+    "name": "Record_ID",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Data_Status",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Data_Quality",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Last_Updated",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Source_ID",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Source_URL",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Notes",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Venue_Name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Previous_Alternative_Venue_Name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Venue_Type",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Primary_Use",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Country",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "City",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "State_Prefecture",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Metro_Area",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Latitude",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Longitude",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Ownership_Type",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Opened_Year",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Renovated_Year",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "New_Renewed_Venue_Flag",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Capacity",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Total_Site_Area_sqm",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Nearest_Major_Station_Airport",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Distance_to_CBD_km",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Sponsor_Name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Sponsor_Industry",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Sponsor_HQ_Country",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Contract_Status",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Contract_Announcement_Date",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Contract_Start_Year",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Contract_End_Year",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Contract_Length_years",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Currency",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Total_Contract_Value_Original",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Annual_Fee_Original",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Annualized_Fee_Original_Calc",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "FX_to_Base_Currency",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Annualized_Fee_Base_Currency",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Inflation_CPI_Normalization_Factor",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Real_Annualized_Fee_Base_Year",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Rights_Scope_Summary",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Included_Assets_Benefits",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Exclusivity_Y_N",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Renewal_Y_N",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Termination_Opt_out_Y_N",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Primary_Tenant_Team",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "League_Competition",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "League_Tier_Level",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Multi_tenant_Y_N",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Number_of_Anchor_Tenants",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Average_Home_Attendance",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Annual_Venue_Attendance",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Annual_Event_Days",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Sports_Event_Days",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Concert_Entertainment_Days",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Other_Event_Days",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Utilization_Rate",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Attendance_per_Seat",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Broadcast_Streaming_Viewers_Annual",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "National_Broadcast_Games_Events",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "International_Exposure_Y_N",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Media_Mentions_Annual",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Estimated_Media_Impressions",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Social_Followers_Tenant_Venue",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Annual_Social_Posts_Mentioning_Venue",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Social_Impressions_Annual",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Avg_Engagement_Rate",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Google_Trends_Index_Venue",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Search_Volume_Venue",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Mobile_Foot_Traffic_Annual",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "City_Population",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Metro_Population",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Regional_GDP_GRP",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Median_Household_Income",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Annual_Tourists_Visitors_City",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Number_of_Large_Corporate_HQs",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Sponsor_Venue_Fit_Notes",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Comparable_Venue_Group",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Special_Factors",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Missing_Data_Flag",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Researcher_Comments",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Region",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Subregion",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Local_Country_Territory_Name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Local_Venue_Name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "English_Venue_Name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Original_Language_Source_Title",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Original_Language",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Row_Source_Type",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Data_Type_Value_Basis",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Value_Disclosure_Status",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Rights_Type",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Naming_Scope",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Tax_Treatment",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Public_Private_Facility",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Facility_Governance_Scheme",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Bundled_Assets_Flag",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Local_Currency_Notes",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Regional_Data_Notes",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Group_1_3_Completeness",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Group_1_3_Cells_Filled_of_31",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Group_1_2_Completeness_excl_Tax",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Section",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Item",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Value",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Unit_Classification",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Source_URL",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "Notes",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
+]
