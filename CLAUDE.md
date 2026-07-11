@@ -44,11 +44,21 @@ One CSV per source, loaded **as-is** into raw tables (values untouched):
 | Purpose | Source | Series / dataset | Granularity |
 |---|---|---|---|
 | FX (contract-year average) | World Bank | `PA.NUS.FCRF` (LCU per US$, period average, 1960–2024) | annual, by country/currency |
-| Inflation to base year | FRED | `CPIAUCSL` (US CPI, all urban, all items) — annual mean | annual, US |
+| Inflation to base year | World Bank | `FP.CPI.TOTL` (US CPI, 2010 = 100) — annual | annual, US |
 | Market size (baseline) | World Bank | `SP.POP.TOTL`, `NY.GDP.MKTP.CD`, income indicators | annual, by country |
 | Market size (finer, optional) | US Census (MSA) + manual for key JP cities | Metropolitan Statistical Area population | metro area |
 
-All external sources are free and key-less (FRED CSV gateway / World Bank REST).
+- **Decision: FRED `CPIAUCSL` replaced by World Bank `FP.CPI.TOTL`** for US
+  inflation. Reason: this session's network policy allowlists
+  `api.worldbank.org` but FRED's `api.stlouisfed.org` requires a per-request
+  `api_key` (confirmed via reachability check — FRED returned HTTP 400
+  "Variable api_key is not set" even though the host itself was reachable).
+  World Bank's `FP.CPI.TOTL` needs no key and is confirmed reachable
+  (HTTP 200, annual series 2000–2024). Consolidating FX and CPI onto a single
+  key-less source (World Bank) removes a credential dependency and an extra
+  vendor from the pipeline.
+
+All external sources are free and key-less (World Bank REST).
 
 ---
 
@@ -85,13 +95,19 @@ All external sources are free and key-less (FRED CSV gateway / World Bank REST).
 
 Pipeline for every monetary value:
 **raw original value (kept)** → **USD at contract-year average FX** → **real USD at
-2026 price level (US CPI)** → *(display only)* **convert to selected currency**.
+2024 price level (US CPI)** → *(display only)* **convert to selected currency**.
 
-- **Base currency = USD.** All comparison and modeling done in real-2026 USD.
+- **Base currency = USD.** All comparison and modeling done in real-2024 USD.
 - **FX = contract START YEAR annual average** (World Bank `PA.NUS.FCRF`).
   - Currency→country mapping for the FX join: USD→USA, JPY→JPN, EUR→Euro area (XC),
     GBP→GBR, CAD→CAN, SGD→SGP. **(decision: record any additions here)**
-- **Inflation:** rebase to **2026** using US CPI (`CPIAUCSL`).
+- **Inflation:** rebase to **2024** using World Bank US CPI (`FP.CPI.TOTL`).
+  - **Decision: base year is 2024, not 2026.** `FP.CPI.TOTL` has no published
+    value for 2025 or 2026 yet (latest actual = 2024, index 143.86, 2010=100).
+    Rebasing to the latest *actual* published CPI year avoids projecting or
+    estimating a 2026 index value. All rebased fees are therefore labeled
+    **"real 2024 USD"** throughout the pipeline and presentation, not "2026" —
+    revisit once World Bank publishes a later actual year.
 - **Display currency is switchable** (USD default; JPY/EUR/…): apply the chosen
   currency's latest rate at the *presentation* step only — never recompute the base.
 - **Raw original values are always preserved** for auditability and re-derivation.
@@ -103,7 +119,7 @@ Pipeline for every monetary value:
 
 ## 4. Analysis-ready table & method
 
-- **Analysis-ready grain:** one row per observed contract with: real-2026-USD
+- **Analysis-ready grain:** one row per observed contract with: real-2024-USD
   annual fee, capacity, league tier, venue type, sport, country, market-size
   fields, and observed/estimate flag.
 - **Method: comparables (ratio) as the spine; a simple regression as a cross-check.**
@@ -114,7 +130,7 @@ Pipeline for every monetary value:
     stadiums — anchored on ZOZO Marine (current home), ES CON Field, Rakuten Park,
     Mizuho PayPay Dome; (2) North American ballparks, market-adjusted; (3) European
     football = reference only (do not mix estimates with disclosed).
-  - **Cross-check model:** regress real-2026-USD annual fee on capacity, market
+  - **Cross-check model:** regress real-2024-USD annual fee on capacity, market
     size, league tier (log where sensible). Report **out-of-sample** error
     (hold out disclosed rows); never report only in-sample fit.
 
