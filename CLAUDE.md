@@ -40,6 +40,9 @@ One CSV per source, loaded **as-is** into raw tables (values untouched):
 | SRC-ASIA  | Asia individual-venue extracts | 16 | Local-language names; per-row sources |
 | SRC-TARGET| Chiba Lotte target case | 1 | **NOT an observation — exclude from benchmark** |
 
+**Data corrections log:**
+- **2026-07:** `raw/data_input_all.csv` replaced with a corrected source version — only the Japan/`SRC-ASIA` rows changed, row count unchanged (642). Most notably `ASIA-007` "ZOZO Marine Stadium": `Annual_Fee_Original` ¥310,000,000 → ¥400,000,000, `Contract_Start_Year` 2016 → 2026 (previously-referenced fee/year values throughout this file and prior PRs are superseded by this correction).
+
 ### External (public macro data — must be joined; this is the real ETL friction)
 | Purpose | Source | Series / dataset | Granularity |
 |---|---|---|---|
@@ -146,6 +149,17 @@ Pipeline for every monetary value:
   - **Cross-check model:** regress real-2024-USD annual fee on capacity, market
     size, league tier (log where sensible). Report **out-of-sample** error
     (hold out disclosed rows); never report only in-sample fit.
+- **Decision: data-quality floor on the comparable set — `annual_fee_usd_real2024
+  >= $10,000/year`.** Applied to the normalized USD fee, not the raw original
+  units (a JPY fee's nominal digits are naturally large, so a raw-units floor
+  would be meaningless across currencies). This excludes at the analysis-ready
+  layer only (`sql/analysis/naming_rights_analysis_ready.sql`) — raw data is
+  never modified or deleted; the row still exists in every layer up through
+  `clean.naming_rights_normalized`, just not in the comparable set.
+  - **Excluded (2026-07 cleanup):** `SBJ-FULL-105` "Casino Del Sol Stadium" —
+    `Annual_Fee_Original = $3.00`/year, evidently a raw data-entry artifact
+    (not a real disclosed naming-rights fee). No other OBSERVED row fell below
+    the $10,000 floor as of this cleanup.
 
 ---
 

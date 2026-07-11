@@ -8,6 +8,15 @@
 -- capacity both computed. TARGET rows never belong here -- see
 -- sql/analysis/target_venues.sql.
 --
+-- Data-quality floor (decision recorded in CLAUDE.md section 2): also
+-- require annual_fee_usd_real2024 >= $10,000/year. This is a plausibility
+-- floor on the normalized USD fee, not the raw original units (a JPY fee's
+-- nominal digits are naturally large and would make a raw-units floor
+-- meaningless) -- it exists to catch data-entry artifacts like a $3/year
+-- "fee" (SBJ-FULL-105, Casino Del Sol Stadium), not to exclude genuinely
+-- small real deals. Raw data is untouched; this excludes at the
+-- analysis-ready (comparable-set) layer only, per that decision.
+--
 -- fee_per_seat_real2024 is the core comparable metric CLAUDE.md section 4
 -- segments on (capacity band x league tier x venue type).
 
@@ -31,4 +40,5 @@ SELECT
 FROM `msbai-capstone-at6787.clean.naming_rights_normalized`
 WHERE row_classification = 'OBSERVED'
   AND annual_fee_usd_real2024 IS NOT NULL
-  AND capacity_num IS NOT NULL;
+  AND capacity_num IS NOT NULL
+  AND annual_fee_usd_real2024 >= 10000;
