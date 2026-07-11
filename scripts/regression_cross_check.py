@@ -14,6 +14,10 @@ out-of-sample error; the final prediction for Chiba Lotte is made by
 refitting on ALL rows (using every available comparable for the actual
 prediction) and computing a classic OLS prediction interval.
 
+The final prediction (point estimate, 50%/80% PI, OOS error) is written to
+`analysis.chiba_lotte_regression_prediction` so the dashboard (Part 3) can
+read it directly instead of re-fitting the model in the web app.
+
 Usage:
     python3 scripts/regression_cross_check.py
 
@@ -21,12 +25,27 @@ Requires: google-cloud-bigquery, numpy, pandas, scikit-learn, statsmodels
 Env vars: BQ_PROJECT (default msbai-capstone-at6787)
 """
 import os
+from datetime import datetime, timezone
 
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 from google.cloud import bigquery
 from sklearn.model_selection import KFold
+
+PREDICTION_TABLE_SCHEMA = [
+    bigquery.SchemaField("model_description", "STRING"),
+    bigquery.SchemaField("target_capacity", "INT64"),
+    bigquery.SchemaField("point_estimate_usd", "FLOAT64"),
+    bigquery.SchemaField("pi50_low_usd", "FLOAT64"),
+    bigquery.SchemaField("pi50_high_usd", "FLOAT64"),
+    bigquery.SchemaField("pi80_low_usd", "FLOAT64"),
+    bigquery.SchemaField("pi80_high_usd", "FLOAT64"),
+    bigquery.SchemaField("oos_median_abs_pct_error", "FLOAT64"),
+    bigquery.SchemaField("oos_r2_log_scale", "FLOAT64"),
+    bigquery.SchemaField("n_training_rows", "INT64"),
+    bigquery.SchemaField("generated_at", "TIMESTAMP"),
+]
 
 PROJECT = os.environ.get("BQ_PROJECT", "msbai-capstone-at6787")
 TARGET_CAPACITY = 33000
@@ -174,6 +193,13 @@ def main():
     final_model = sm.OLS(df["log_fee"].values, X_full).fit()
     print(final_model.summary())
 
+    # Re-run OOS validation with the EXACT final settings, rather than reuse
+    # an earlier candidate's numbers -- keeps the persisted metrics honest
+    # even if a future run picks a different final model than today's.
+    final_actual, final_pred = cross_validate(df, final_use_venue_type, group_categories, final_market_term)
+    final_oos_metrics = oos_metrics(final_actual, final_pred)
+    print("\nFinal model's own OOS metrics:", final_oos_metrics)
+
     target_row = {
         "log_capacity": [np.log(TARGET_CAPACITY)],
         "venue_type_group": [TARGET_VENUE_TYPE_GROUP],
@@ -198,6 +224,43 @@ def main():
     print(f"Point estimate:  USD {mean_usd:,.0f}  /  JPY {mean_usd * LATEST_FX_JPY_PER_USD:,.0f}")
     print(f"80% PI low:      USD {lo_usd:,.0f}  /  JPY {lo_usd * LATEST_FX_JPY_PER_USD:,.0f}")
     print(f"80% PI high:     USD {hi_usd:,.0f}  /  JPY {hi_usd * LATEST_FX_JPY_PER_USD:,.0f}")
+
+    summary50 = pred.summary_frame(alpha=0.50)  # 50% prediction interval
+    lo50_usd = np.exp(summary50["obs_ci_lower"].iloc[0])
+    hi50_usd = np.exp(summary50["obs_ci_upper"].iloc[0])
+
+    model_description = "log(fee) ~ log(capacity)"
+    if final_use_venue_type:
+        model_description += " + venue_type"
+    if final_market_term:
+        model_description += f" + {final_market_term}"
+
+    row = {
+        "model_description": model_description,
+        "target_capacity": TARGET_CAPACITY,
+        "point_estimate_usd": float(mean_usd),
+        "pi50_low_usd": float(lo50_usd),
+        "pi50_high_usd": float(hi50_usd),
+        "pi80_low_usd": float(lo_usd),
+        "pi80_high_usd": float(hi_usd),
+        "oos_median_abs_pct_error": float(final_oos_metrics["median_abs_pct_error"]),
+        "oos_r2_log_scale": float(final_oos_metrics["r2_log_scale"]),
+        "n_training_rows": int(len(df)),
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    print("\n=== Persisting prediction to analysis.chiba_lotte_regression_prediction ===")
+    print(row)
+
+    dataset_ref = bigquery.Dataset(f"{PROJECT}.analysis")
+    client.create_dataset(dataset_ref, exists_ok=True)
+    table_id = f"{PROJECT}.analysis.chiba_lotte_regression_prediction"
+    job_config = bigquery.LoadJobConfig(
+        schema=PREDICTION_TABLE_SCHEMA,
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+    )
+    job = client.load_table_from_json([row], table_id, job_config=job_config)
+    job.result()
+    print(f"{table_id}: loaded 1 row")
 
 
 if __name__ == "__main__":
